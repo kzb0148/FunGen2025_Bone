@@ -59,9 +59,9 @@ mkdir -p ${DD}
 cd ${DD}
 
 ########## Download data files from NCBI
-## From SRA use the SRA tool kit - see NCBI website https://www.ncbi.nlm.nih.gov/sra/docs/sradownload/
-	## this downloads the SRA file and converts to .fastq
-		## splits the files into R1 and R2 (forward reads, reverse reads)
+## From SRA use the SRA Toolkit - see NCBI website https://www.ncbi.nlm.nih.gov/sra/docs/sradownload/
+	## This downloads the SRA file and converts it to .fastq
+		## Splits the files into R1 and R2 (forward reads, reverse reads)
 
 fasterq-dump SRR22459519
 fasterq-dump SRR22459520
@@ -93,7 +93,7 @@ mkdir ${WD}/${PCQ}
 cd ${DD}
 
 ## Make list of file names to run through Trimmomatic
-        ## this line is a set of piped (|) commands
+        ## This line is a set of piped (|) commands
         ## ls means make a list, 
         ## grep means grab all file names that end in ".fastq", 
         ## cut that name into elements at each "_" and keep the first element (-f 1),
@@ -148,7 +148,7 @@ mkdir -p $MAPD
 mkdir -p $COUNTSD
 mkdir -p $RESULTSD
 
-## Prepare the Reference Index for mapping with HiSat2
+## Prepare the Reference Index for mapping with HISAT2
 
 cd $REFD
 
@@ -167,10 +167,10 @@ hisat2-build --ss ${REF}.ss --exon ${REF}.exon ${REF}.fna Boxer_index
 ########## Map and count the data using HISAT2 and StringTie
 
 ## Move to the Data Directory
-cd ${CD}  ## This is where our clean paired reads are located
+cd ${CD}  ## This is where the clean paired reads are located
 
 ## Create list of .fastq files to map
-## Grab all .fastq files, cut on the underscore, use only the first of the cuts, sort, use unique put in list
+## Grab all .fastq files, cut on the underscore, use only the first of the cuts, sort, and use uniq to put in list
 ls | grep ".fastq" |cut -d "_" -f 1| sort | uniq > list    #should list Example: SRR629651
 
 ## Move to the directory for mapping
