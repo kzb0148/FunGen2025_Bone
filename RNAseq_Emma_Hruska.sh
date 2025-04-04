@@ -72,7 +72,7 @@ fasterq-dump SRR22458632
 
 ########## FastQC to assess quality of the sequence data
 
-## FastQC: Run on each of the data files that have 'All' to check the quality of the data
+## FastQC: Run on each of the data files that have "All" to check the quality of the data
 ## The output from this analysis is a folder of results, a zipped file of results, and an .html file for each sample
 mkdir ${WD}/${RDQ}
 fastqc *.fastq --outdir=${WD}/${RDQ}
@@ -120,7 +120,7 @@ do
                 ## SLIDINGWINDOW: <windowSize>:<requiredQuality> specifies the number of bases to average across and the average quality required
 
 ########## FastQC to assess quality of the cleaned sequence data
-	## FastQC: Run on each of the data files that have 'All' to check the quality of the data
+	## FastQC: Run on each of the data files that have "All" to check the quality of the data
 	## The output from this analysis is a folder of results and a zipped file of results
 
 fastqc ${CD}/"$i"_1_paired.fastq --outdir=${WD}/${PCQ}
