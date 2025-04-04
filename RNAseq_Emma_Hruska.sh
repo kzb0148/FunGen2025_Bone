@@ -41,7 +41,7 @@ MyID=aubclsd0318
 WD=/scratch/$MyID/Individual_Component            
 DD=$WD/RawData
 RDQ=RawDataQuality
-adapters=AdaptersToTrim_All.fa  ## This is a fasta file that has a list of adapters commonly used in NGS sequencing
+adapters=AdaptersToTrim_All.fa  ## This is a .fasta file that has a list of adapters commonly used in NGS sequencing
 CD=$WD/CleanData            			
 PCQ=PostCleanQuality
 REFD=$WD/BoxerRefGenome         ## This directory contains the indexed reference genome
@@ -71,7 +71,8 @@ fasterq-dump SRR22458624
 fasterq-dump SRR22458632
 
 ########## FastQC to assess quality of the sequence data
-## FastQC: run on each of the data files that have 'All' to check the quality of the data
+
+## FastQC: Run on each of the data files that have 'All' to check the quality of the data
 ## The output from this analysis is a folder of results, a zipped file of results, and an .html file for each sample
 mkdir ${WD}/${RDQ}
 fastqc *.fastq --outdir=${WD}/${RDQ}
@@ -93,21 +94,21 @@ mkdir ${WD}/${PCQ}
 cd ${DD}
 
 ## Make list of file names to run through Trimmomatic
-        ## This line is a set of piped (|) commands
+        ## This line is a set of piped (|) commands:
         ## ls means make a list, 
         ## grep means grab all file names that end in ".fastq", 
         ## cut that name into elements at each "_" and keep the first element (-f 1),
         ## sort the list, keep only the unique names, and put it into a file named "list"
 ls | grep ".fastq" |cut -d "_" -f 1 | sort | uniq > list
 
-## Copy over the list of sequencing adapters that we want Trimmomatic to look for (along with its default adapters)
+## Copy over the list of sequencing adapters for Trimmomatic to look for (along with its default adapters)
 cp /home/${MyID}/class_shared/AdaptersToTrim_All.fa . 
 
 ## Run a while loop to process through the file names in the list and process them with the Trimmomatic code
 while read i
 do
 
-        ## Run Trimmomatic in paired end (PE) mode with 6 threads using phred 33 quality score format
+        ## Run Trimmomatic in paired end (PE) mode with 6 threads using -phred33 quality score format
 	       java -jar /apps/x86-64/apps/spack_0.19.1/spack/opt/spack/linux-rocky8-zen3/gcc-11.3.0/trimmomatic-0.39-iu723m2xenra563gozbob6ansjnxmnfp/bin/trimmomatic-0.39.jar   \
 					PE -threads 6 -phred33 \
         	"$i"_1.fastq "$i"_2.fastq  \
@@ -115,13 +116,11 @@ do
        	 ILLUMINACLIP:AdaptersToTrim_All.fa:2:35:10 HEADCROP:10 LEADING:30 TRAILING:30 SLIDINGWINDOW:6:30 MINLEN:36
         
                 ## Trim read for quality when quality drops below Q30 and remove sequences shorter than 36 bp
-                ## PE for paired end phred-score-type  R1-Infile   R2-Infile  R1-Paired-outfile R1-unpaired-outfile R-Paired-outfile R2-unpaired-outfile  Trimming paramenter
-                ## MINLEN:<length> #length: Specifies the minimum length of reads to be kept.
-                ## SLIDINGWINDOW:<windowSize>:<requiredQuality>  #windowSize: specifies the number of bases to average across  
-                ## requiredQuality: specifies the average quality required.
+                ## MINLEN: <length> specifies the minimum length of reads to be kept
+                ## SLIDINGWINDOW: <windowSize>:<requiredQuality> specifies the number of bases to average across and the average quality required
 
 ########## FastQC to assess quality of the cleaned sequence data
-	## FastQC: run on each of the data files that have 'All' to check the quality of the data
+	## FastQC: Run on each of the data files that have 'All' to check the quality of the data
 	## The output from this analysis is a folder of results and a zipped file of results
 
 fastqc ${CD}/"$i"_1_paired.fastq --outdir=${WD}/${PCQ}
@@ -129,15 +128,15 @@ fastqc ${CD}/"$i"_2_paired.fastq --outdir=${WD}/${PCQ}
 
 done<list			## This is the end of the loop
 
-########## Run MultiQC to summarize the FastQC results
+########## MultiQC to summarize the FastQC results!
 
 ## Move to the directory with the cleaned data
 cd ${WD}/${PCQ}
 multiqc ${WD}/${PCQ}
 
-##########  Now compress your results files from FastQC 
+########## Now compress the results files from FastQC 
 
-## Tarball the directory containing the FastQC results so we can easily bring it back to our computer to evaluate
+## Tarball the directory containing the FastQC results to easily bring it back to your computer to evaluate
 tar cvzf ${PCQ}.tar.gz ${WD}/${PCQ}/*
 
 ########## Mapping and counting
@@ -148,16 +147,15 @@ mkdir -p $MAPD
 mkdir -p $COUNTSD
 mkdir -p $RESULTSD
 
-## Prepare the Reference Index for mapping with HISAT2
-
+## Prepare the reference index for mapping with HISAT2
 cd $REFD
 
-## Copy the reference genome (.fasta) and the annotation file (.gff3) to this REFD directory
+## Copy the reference genome (.fna) and the annotation file (.gff) to this REFD directory
 cp /home/${MyID}/ncbi_dataset/data/GCF_000002285.5/${REF}.fna .
 cp /home/${MyID}/ncbi_dataset/data/GCF_000002285.5/genomic.gff .
 
 ## Identify exons and splice sites on the reference genome
-gffread genomic.gff -T -o ${REF}.gtf    ## gffread converts the annotation file from .gff3 to .gft format for HISAT2 to use
+gffread genomic.gff -T -o ${REF}.gtf    ## gffread converts the annotation file from .gff to .gft format for HISAT2 to use
 hisat2_extract_splice_sites.py ${REF}.gtf > ${REF}.ss
 hisat2_extract_exons.py ${REF}.gtf > ${REF}.exon
 
@@ -171,7 +169,7 @@ cd ${CD}  ## This is where the clean paired reads are located
 
 ## Create list of .fastq files to map
 ## Grab all .fastq files, cut on the underscore, use only the first of the cuts, sort, and use uniq to put in list
-ls | grep ".fastq" |cut -d "_" -f 1| sort | uniq > list    #should list Example: SRR629651
+ls | grep ".fastq" |cut -d "_" -f 1| sort | uniq > list
 
 ## Move to the directory for mapping
 cd ${MAPD}
@@ -195,7 +193,7 @@ do
   
   samtools view -@ 6 -bS "$i".sam > "$i".bam  
 
-    ## This is sorting the BAM file using 6 threads and produces a .bam file that includes the word 'sorted' in the name
+    ## This is sorting the BAM file using 6 threads and produces a .bam file that includes the word "sorted" in the name
   samtools sort -@ 6  "$i".bam  -o  "$i"_sorted.bam
 
     ## Index the BAM, get mapping statistics, and put them in a text file to look at
