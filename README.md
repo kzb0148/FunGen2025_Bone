@@ -1,2 +1,4 @@
-# FunGen2025_Bone
-**This Github is for the Functional Genomics Final Project for 2025 Bone **
+# Functional Genomics (BIOL 5850/6850) Final Project
+## Bone Group
+
+This GitHub repository contains the scripts used for our group and individual RNAseq analyses.
