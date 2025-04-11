@@ -151,5 +151,5 @@ head(NormTransExpIDs)
 names(NormTransExp)[1]<- "gene_id"
 head(NormTransExp)
 
-### Write the transformed normalized count matrix with gene names to a tab delimited text file that can be imported into Cytoscape.
+### Write the transformed normalized count matrix with gene names to a tab-delimited text file that can be imported into Cytoscape.
 write.table(as.data.frame(NormTransExp_withName), file="NormTransExp.txt", quote=FALSE, row.names=FALSE, sep = "\t")  
