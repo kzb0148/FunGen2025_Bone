@@ -154,7 +154,7 @@ cp /home/aubclsd0318/ncbi_dataset/data/GCF_000002285.5/${REF}.fna .
 cp /home/aubclsd0318/ncbi_dataset/data/GCF_000002285.5/genomic.gff .
 
 ## Identify exons and splice sites on the reference genome
-gffread genomic.gff -T -o ${REF}.gtf               ## gffread converts the annotation file from .gff to .gft formate for HISAT2 to use
+gffread genomic.gff -T -o ${REF}.gtf               ## gffread converts the annotation file from .gff to .gtf formate for HISAT2 to use
 hisat2_extract_splice_sites.py ${REF}.gtf > ${REF}.ss
 hisat2_extract_exons.py ${REF}.gtf > ${REF}.exon
 
