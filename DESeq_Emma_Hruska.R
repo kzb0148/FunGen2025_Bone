@@ -76,7 +76,7 @@ resOrdered
   mat  <- mat - rowMeans(mat)
   anno <- as.data.frame(colData(vsd)[, c("Tissue", "type")])
   df <- as.data.frame(colData(dds)[,c("Tissue","type")])
-    pheatmap(mat, annotation_col = anno)
+    pheatmap(mat, annotation_col = anno, fontsize = 5)
   
 ### Heatmap of the sample-to-sample distances.
   sampleDists <- dist(t(assay(rld)))
@@ -91,7 +91,9 @@ resOrdered
            col=colors)
   
 ### Principal component plot of the samples.
-  plotPCA(rld, intgroup=c("Tissue"))
+  library(ggplot2)
+  p <- plotPCA(rld, intgroup=c("Tissue"))
+  p + coord_cartesian(ylim = c(-25, 25)) 
   
 #### Preparing Data For GSEA and Cytoscape ####
 
